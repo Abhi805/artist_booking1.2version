@@ -24,4 +24,6 @@ router.post("/create-event", verifyToken, verifyAdmin, async (req, res) => {
   }
 });
 
+
+
 export default router;

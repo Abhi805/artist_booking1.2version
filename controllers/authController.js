@@ -55,9 +55,16 @@ export const loginUser = async (req, res) => {
 
     const token = generateToken(user);
 
+    // Set token in cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // only true in production
+      sameSite: "Strict", // CSRF protection
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    });
+
     res.status(200).json({
       msg: "Login successful",
-      token,
       user: {
         id: user._id,
         fullName: user.fullName,
@@ -68,4 +75,11 @@ export const loginUser = async (req, res) => {
   } catch (error) {
     res.status(500).json({ msg: "Server error", error: error.message });
   }
+};
+
+
+
+export const logoutUser = (req, res) => {
+  res.clearCookie("token");
+  res.status(200).json({ msg: "Logged out successfully" });
 };
